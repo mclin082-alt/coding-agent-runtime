@@ -1,41 +1,40 @@
-# Codex Runtime Research
+# Coding Agent · Codex 源码研究与实验
 
-这是一个面向 **coding agent runtime** 的个人研究项目。我通过源码阅读、local run 和可复现实验，理解 Codex 如何把用户任务转化为 context、model inference、tool call、文件修改与验证结果。
+**围绕代码修复任务，研究 Agent 如何利用上下文、工具结果和验证反馈推进任务。**
 
-> 当前仓库只保留项目入口。研究记录和可复现 evidence 会在完成后逐步公开，不把 OpenAI Codex 的完整源码重复上传到本仓库。
+我关注任务输入到最终结果之间的执行机制：模型依据什么决定下一步，操作受到哪些约束，以及怎样确认任务已经完成。这个仓库记录源码研究方向与实验整理进度，与 [Forge Agent 的自主实现](https://github.com/mclin082-alt/forge-agent) 相互关联。
 
-## 我在研究什么
+当前公开成果是研究问题与进展入口。历史说明记录过源码阅读和本地运行实验，对应笔记、脚本与执行轨迹尚未公开。
 
-1. **Runtime loop**：一次 task 如何经过 turn、sampling、tool execution 和 result handling。
-2. **Context engineering**：指令、历史消息、工具结果与压缩后的 context 如何进入下一次 inference。
-3. **Tool safety**：文件修改、命令执行、approval 和 sandbox 如何共同限制 agent 行为。
-4. **Provider compatibility**：Codex CLI 如何通过 Responses API 接入不同 model provider。
-5. **Evaluation evidence**：如何区分“模型给出了回答”和“runtime 确实完成并验证了任务”。
+## 研究重点
 
-## 当前进展
+| 研究问题 | 关注内容 |
+| --- | --- |
+| Agent 怎样根据反馈调整行动 | 上下文组织、模型与工具调用衔接、失败结果如何影响后续决策 |
+| 怎样控制操作范围 | 工具权限、具体动作审批与 sandbox 的执行边界 |
+| 怎样判断任务完成 | 代码变化、前后测试、执行轨迹与结果验收的对应关系 |
 
-| 内容 | 状态 | Evidence 类型 |
-| --- | --- | --- |
-| Codex CLI runtime 与 provider contract 阅读 | 已完成第一轮 | Source reading |
-| 可复用 EVN provider profile | 本地已验证 | Local configuration |
-| 使用 Codex CLI 完成受约束代码修复 | 本地已验证 | Test result + file-scope check |
-| Runtime trace 与研究笔记 | 整理中 | 待公开 |
-| 真实业务系统集成 | 未声称完成 | — |
+## 目前可核对的材料
 
-这里的“本地已验证”只代表在指定环境中完成过实际运行，不等同于 production deployment 或通用兼容性证明。
+1. [原始项目进展记录](https://github.com/mclin082-alt/coding-agent-runtime/blob/5d301b1e8e860a79536ff3c1279245fdc025e97b/README.md)：保留当时的源码阅读与本地实验自述，未附独立验收产物。
+2. [公开证据清单](docs/EVIDENCE.md)：列出已有内容、材料缺口与后续整理要求。
 
-## Upstream
+研究对象是 [官方 OpenAI Codex](https://github.com/openai/codex)。2026-10-14 的仓库核查仅确认公开文件与说明，没有执行新的 runtime 实验。
 
-本项目的源码研究对象是 [OpenAI Codex](https://github.com/openai/codex)。
+## 研究、实现与集成
 
-本仓库不是 Codex 的镜像、二次分发或官方文档。需要查看、构建或跟踪源码时，请直接使用官方仓库；本仓库只记录我自己的研究问题、实验过程、结论与边界。
+| 项目 | 我的工作定位 |
+| --- | --- |
+| 本仓库 | 源码阅读、机制分析与实验整理 |
+| [Forge Agent](https://github.com/mclin082-alt/forge-agent) | 自主实现小型 Coding Agent，并验证修复、审批与回放流程 |
+| [Enterprise AI Workspace](https://github.com/mclin082-alt/enterprise-ai-workspace) | 基于官方 SDK/runtime 实现任务服务与只读资料接入 |
 
-## 后续公开内容
+各项目的贡献和验收结果分别记录，官方 Codex 的实现属于研究对象。
 
-后续材料会在具备独立验证价值后再加入，包括：
+## 待补材料
 
-- runtime 调用链笔记；
-- 脱敏后的 trace 与关键事件；
-- 可复制的运行命令、输入和预期输出；
-- 成功标准、失败记录与适用边界；
-- coding agent 在真实业务 workflow 中的最小实验。
+- 带源码版本、关键路径和个人分析的阅读笔记。
+- 包含任务输入、运行命令、前后测试、改动与结论的完整实验记录。
+- 经脱敏的执行轨迹，以及截图或短 Demo。
+
+当前仓库尚无可独立复核的研究实验产物，研究过程与结论仍需这些材料支持。可运行的自主实现及其验收记录见 [Forge Agent](https://github.com/mclin082-alt/forge-agent)。
